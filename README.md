@@ -1,4 +1,4 @@
-# matrix
+# ffimatrix
 
 SWI-Prolog pack for matrix operations. 
 Now being rewritten to use the new FFI library for SWI-Prolog.

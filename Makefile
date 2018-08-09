@@ -5,7 +5,7 @@ all: matrixNative.so doc
 matrixNative.so: matrixNative.c matrixNative.h
 	gcc -O2 -shared -o matrixNative.so matrixNative.c
 
-doc: prolog/matrix.pl
+doc: prolog/ffimatrix.pl
 	swipl prolog/doc.pl
 
 check:

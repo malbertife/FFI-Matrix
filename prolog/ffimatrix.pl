@@ -1,4 +1,4 @@
-:- module(matrix,
+:- module(ffimatrix,
           [ matrix_write/1,
             matrix_new/3,
             matrix_new/4,
