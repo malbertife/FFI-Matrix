@@ -42,6 +42,28 @@
 :- use_module(library(ffi)).
 :- use_module(library(lambda)).
 
+:- c_import("#include <atlas/clapack.h>",
+            [liblapack],
+            
+            [ clapack_dpotrf(int,
+                             int,
+                             int,
+                             *double,
+                             int,
+                             [int])
+            ]).
+
+cholesky(matrix(doubles,[Order,Order],A)):-
+    clapack_dpotrf(101,122,Order,A,3,_).
+
+
+chol_example:-
+    matrix_new(doubles,[3,3],[25,15,-5,15,18,0,-5,0,11],Matrix1),
+    matrix_to_list(Matrix1,Elements),
+    matrixCopy(3,3,Elements,ElementsCopy),
+    %matrix_new(doubles,[3,3],[25,15,-5,15,18,0,-5,0,11],M2),
+    cholesky(M1),
+    matrix_write(M1).
 
 
 % https://www.dcc.fc.up.pt/~vsc/Yap/documentation.html#matrix
@@ -72,7 +94,7 @@ user:term_expansion((:-import),  (:-Import)) :-
     current_prolog_flag(arch, Arch),
     atom_concat('../lib/', Arch, A1),
     atom_concat(A1, '/matrixNative', A2),
-    Import=c_import("#include \"../matrixNative.h\"", [A2], [matrixSetAll(int, int, *double, double), matrixEye(int, int, *double)]).
+    Import=c_import("#include \"../matrixNative.h\"", [A2], [matrixSetAll(int, int, *double, double), matrixEye(int, int, *double),matrixCopy(int,int,*double,*double)]).
 
 
 :- import.
@@ -861,6 +883,11 @@ from_list([Element|MoreElements], Index, Elements) :-
 
 matrix_from_list(List, matrix(_, [_, _], Elements)) :-
     from_list(List, Elements).
+
+example(Elements):-
+    matrix_new(doubles, [3, 3], Matrix1),
+    Matrix1=matrix(_, [3, 3], Elements),
+    matrix_eye(3, 3, Elements).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       START TESTS       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- begin_tests(matrix).

@@ -20,3 +20,16 @@ void matrixEye(int NRows, int NColumns, double array[]){
         }
     }
 }
+
+void matrixCopy(int NRows,int NColumns,double matrix1[],double matrix2[]){
+    int index,i,j,NElements;
+
+    NElements=NRows*NColumns;
+
+    for(i=0;i<NRows;i++){
+        for(j=0;j<NColumns;j++){
+            index=i*NColumns+j;
+            matrix2[index]=matrix1[index];
+        }
+    }
+}
