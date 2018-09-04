@@ -36,21 +36,23 @@
             matrix_map/3,
             matrix_foreach/2,
             matrix_foldl/3,
-            matrix_from_list/2
+            matrix_from_list/2,
+            cholesky_function/0
           ]).
 
 :- use_module(library(ffi)).
 :- use_module(library(lambda)).
 
 :- c_import("#include <atlas/clapack.h>",
-            [liblapack],
+            [liblapack_atlas],
             [clapack_dpotrf(int, int, int, *double, int, [int])]).
 
 cholesky(matrix(doubles, [Order, Order], A)) :-
     clapack_dpotrf(101, 122, Order, A, 3, _).
 
-
-chol_example :-
+%!  cholesky_function
+% Given in input M1 make the decomposition of Cholesky into M2
+cholesky_function :-
     matrix_new(doubles, [3, 3], [25, 15, -5, 15, 18, 0, -5, 0, 11], Matrix1),
     matrix_new(doubles, [3, 3], Matrix2),
     matrix_sollower(Matrix1, Matrix2),
@@ -1073,12 +1075,20 @@ example(Elements) :-
     matrix_foldl(Matrix1, findMax, 9.0).
 
     test(matrix_from_list1) :-
-    matrix_new(doubles, [3, 3], [1, 2, 3, 4, 5, 6, 7, 8, 9], M1),
-    matrix_from_list([11, 12, 13, 14, 15, 16, 17, 18, 19], M1),
+    matrix_new(doubles, [3, 3], [1, 2, 3, 4, 5, 6, 7, 8, 9], Matrix1),
+    matrix_from_list([11, 12, 13, 14, 15, 16, 17, 18, 19], Matrix1),
     matrix_new(doubles,
                [3, 3],
                [11.0, 12.0, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0],
                Expected),
-    matrix_equal(M1, Expected).
+    matrix_equal(Matrix1, Expected).
+
+    test(cholesky1) :-
+    matrix_new(doubles, [3, 3], [25, 15, -5, 15, 18, 0, -5, 0, 11], Matrix1),
+    matrix_new(doubles, [3, 3], Matrix2),
+    matrix_new(doubles, [3, 3], [5.0,0.0,0.0,3.0,3.0,0.0,-1.0,1.0,3.0],Expected),
+    matrix_sollower(Matrix1, Matrix2),
+    cholesky(Matrix2),
+    matrix_equal(Matrix2, Expected).
 
 end_tests(matrix).
