@@ -1,8 +1,8 @@
 LIBDIR=lib/$(SWIARCH)/
 
-all: matrixNative.so doc
+all: matrixNative.$(SOEXT) doc
 
-matrixNative.so: matrixNative.c matrixNative.h
+matrixNative.$(SOEXT): matrixNative.c matrixNative.h
 	gcc -O2 -shared -o matrixNative.so matrixNative.c
 
 doc: prolog/ffimatrix.pl
