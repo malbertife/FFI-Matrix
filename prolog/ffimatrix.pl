@@ -908,6 +908,17 @@ example(Elements) :-
     Matrix1=matrix(_, [3, 3], Elements),
     matrix_eye(3, 3, Elements).
 
+
+matrix_random(NRows,NColumns,Matrix):-
+    matrix_new(doubles, [NRows, NColumns], Matrix),
+    matrix_foreach(Matrix, \X^Y^(random(E),myset(X,Y,E))).
+
+aux1:-
+    matrix_random(10,10, Matrix1),
+    matrix_transpose(Matrix1, Matrix2),
+    matrix_mul(Matrix1, Matrix2, Matrix3),
+    matrix_write(Matrix3).
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%       START TESTS       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 :- begin_tests(matrix).
 
