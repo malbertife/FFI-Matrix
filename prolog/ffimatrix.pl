@@ -59,13 +59,30 @@ cholesky_function :-
     cholesky(Matrix2),
     matrix_write(Matrix2).
 
-matrix_sollower(matrix(Type, [NRows, NColumns], Elements1), matrix(Type, [NRows, NColumns], Elements2)):-
-    sollowerMatrix(NRows,NColumns,Elements1,Elements2).
+matrix_sollower(matrix(Type, [NRows, NColumns], Elements1), matrix(Type, [NRows, NColumns], Elements2)) :-
+    sollowerMatrix(NRows, NColumns, Elements1, Elements2).
 
 
 matrix_copy(matrix(Type, [NRows, NColumns], Elements1), matrix(Type, [NRows, NColumns], Elements2)) :-
     NElements is NRows*NColumns,
     arrayCopy(NElements, Elements1, Elements2).
+
+matrix_to_list_of_lists(M, L) :-
+    aux0(M,0, 0, L).
+
+aux0(matrix(_,[NRows, _], _), NRows, _, []):-
+!.      
+aux0(M, Row, NColumns, [[]|MoreRows]):-
+    M=matrix(_,[_, NColumns], _),
+    !,
+    Row1 is Row + 1,
+    aux0(M, Row1, 0, MoreRows).
+aux0(M,Row,Column, [[Element|MoreElements]|MoreRows]):-
+    matrix_get(M, [Row, Column], Element),
+    Column1 is Column +1,
+    aux0(M, Row, Column1, [MoreElements|MoreRows]).
+
+
 
 
 % https://www.dcc.fc.up.pt/~vsc/Yap/documentation.html#matrix
