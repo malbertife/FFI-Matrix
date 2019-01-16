@@ -37,7 +37,9 @@
             matrix_foreach/2,
             matrix_foldl/3,
             matrix_from_list/2,
-            cholesky_function/0
+            cholesky_function/1,
+            matrix_random/3,
+            matrix_to_list_of_lists/2
           ]).
 
 :- use_module(library(ffi)).
@@ -52,9 +54,9 @@ cholesky(matrix(doubles, [Order, Order], A)) :-
 
 %!  cholesky_function
 % Given in input M1 make the decomposition of Cholesky into M2
-cholesky_function :-
-    matrix_new(doubles, [3, 3], [25, 15, -5, 15, 18, 0, -5, 0, 11], Matrix1),
-    matrix_new(doubles, [3, 3], Matrix2),
+cholesky_function(Matrix1) :-
+    Matrix1=matrix(Type,[Order, Order], _),
+    matrix_new(Type, [Order, Order], Matrix2),
     matrix_sollower(Matrix1, Matrix2),
     cholesky(Matrix2),
     matrix_write(Matrix2).
@@ -914,7 +916,7 @@ matrix_random(NRows,NColumns,Matrix):-
     matrix_foreach(Matrix, \X^Y^(random(E),myset(X,Y,E))).
 
 aux1:-
-    matrix_random(10,10, Matrix1),
+    matrix_random(2,2, Matrix1),
     matrix_transpose(Matrix1, Matrix2),
     matrix_mul(Matrix1, Matrix2, Matrix3),
     matrix_write(Matrix3).
