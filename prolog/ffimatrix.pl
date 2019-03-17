@@ -55,7 +55,7 @@ cholesky(matrix(doubles, [Order, Order], A)) :-
 %!  cholesky_function
 % Given in input M1 make the decomposition of Cholesky into M2
 cholesky_function(Matrix1) :-
-    Matrix1=matrix(Type,[Order, Order], _),
+    Matrix1=matrix(Type, [Order, Order], _),
     matrix_new(Type, [Order, Order], Matrix2),
     matrix_sollower(Matrix1, Matrix2),
     cholesky(Matrix2),
@@ -70,18 +70,16 @@ matrix_copy(matrix(Type, [NRows, NColumns], Elements1), matrix(Type, [NRows, NCo
     arrayCopy(NElements, Elements1, Elements2).
 
 matrix_to_list_of_lists(M, L) :-
-    aux0(M,0, 0, L).
+    aux0(M, 0, 0, L).
 
-aux0(matrix(_,[NRows, _], _), NRows, _, []):-
-!.      
-aux0(M, Row, NColumns, [[]|MoreRows]):-
-    M=matrix(_,[_, NColumns], _),
-    !,
-    Row1 is Row + 1,
+aux0(matrix(_, [NRows, _], _), NRows, _, []) :- !.      
+aux0(M, Row, NColumns, [[]|MoreRows]) :-
+    M=matrix(_, [_, NColumns], _), !,
+    Row1 is Row+1,
     aux0(M, Row1, 0, MoreRows).
-aux0(M,Row,Column, [[Element|MoreElements]|MoreRows]):-
+aux0(M, Row, Column, [[Element|MoreElements]|MoreRows]) :-
     matrix_get(M, [Row, Column], Element),
-    Column1 is Column +1,
+    Column1 is Column+1,
     aux0(M, Row, Column1, [MoreElements|MoreRows]).
 
 
@@ -115,7 +113,7 @@ user:term_expansion((:-import),  (:-Import)) :-
     current_prolog_flag(arch, Arch),
     atom_concat('../lib/', Arch, A1),
     atom_concat(A1, '/matrixNative', A2),
-    Import=c_import("#include \"../matrixNative.h\"", [A2], [matrixSetAll(int, int, *double, double), matrixEye(int, int, *double), matrixCopy(int, int, *double, *double),arrayCopy(int,*double,*double),sollowerMatrix(int,int,*double,*double)]).
+    Import=c_import("#include \"../matrixNative.h\"", [A2], [matrixSetAll(int, int, *double, double), matrixEye(int, int, *double), matrixCopy(int, int, *double, *double), arrayCopy(int, *double, *double), sollowerMatrix(int, int, *double, *double)]).
 
 
 :- import.
@@ -128,17 +126,14 @@ matrix_write(matrix(_, [NRows, NColumns], Matrix)) :-
 write_matrix(Matrix, NRows, NColumns) :-
     write_matrix(Matrix, 0, 0, NRows, NColumns).
 
-write_matrix(_, NRows, _, NRows, _) :-
-    !.
+write_matrix(_, NRows, _, NRows, _) :- !.
 
-write_matrix(MatrixElements, CurrentRow, NColumns, NRows, NColumns) :-
-    !,
+write_matrix(MatrixElements, CurrentRow, NColumns, NRows, NColumns) :- !,
     writeln(''),
     CurrentRow1 is CurrentRow+1,
     write_matrix(MatrixElements, CurrentRow1, 0, NRows, NColumns).
 
-write_matrix(MatrixElements, CurrentRow, CurrentColumn, NRows, NColumns) :-
-    !,
+write_matrix(MatrixElements, CurrentRow, CurrentColumn, NRows, NColumns) :- !,
     Index is CurrentRow*NColumns+CurrentColumn,
     c_load(MatrixElements[Index], Element),
     write(Element),
@@ -199,12 +194,10 @@ matrix_type(matrix(Type, _, _), Type).
 
 %!  matrix_to_list(+M1,-List)
 % Function that transforms the matrix passed in input in a list. 
-to_list(_, NRows, _, NRows, _, List) :-
-    !,
+to_list(_, NRows, _, NRows, _, List) :- !,
     List=([]).
 
-to_list(MatrixElements, CurrentRow, NColumns, Nrows, NColumns, List) :-
-    !,
+to_list(MatrixElements, CurrentRow, NColumns, Nrows, NColumns, List) :- !,
     CurrentRow1 is CurrentRow+1,
     to_list(MatrixElements, CurrentRow1, 0, Nrows, NColumns, List).
 
@@ -237,11 +230,9 @@ matrix_map(Predicate, matrix(Type, [NRows, NColumns], MatrixElements1), matrix(T
                matrix(_, _, MatrixElements2)),
     matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, 0, 0).
 
-matrix_map(_, NRows, _, _, _, NRows, _) :-
-    !.
+matrix_map(_, NRows, _, _, _, NRows, _) :- !.
 
-matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :-
-    !,
+matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow1, 0).
 
@@ -267,8 +258,7 @@ myset(_, Number, Number).
 myset(_, 0).
 % This function find the max number between two number.
 findMax(FirstNumber, SecondNumber, FirstNumber) :-
-    FirstNumber>=SecondNumber,
-    !.
+    FirstNumber>=SecondNumber, !.
 
 findMax(_, SecondNumber, SecondNumber).
 
@@ -279,11 +269,9 @@ findMax(_, SecondNumber, SecondNumber).
 matrix_foreach(matrix(_, [NRows, NColumns], MatrixElements), Predicate) :-
     matrix_foreach(Predicate, NRows, NColumns, MatrixElements, 0, 0).
 
-matrix_foreach(_, NRows, _, _, NRows, _) :-
-    !.
+matrix_foreach(_, NRows, _, _, NRows, _) :- !.
 
-matrix_foreach(Predicate, NRows, NColumns, MatrixElements, CurrentRow, NColumns) :-
-    !,
+matrix_foreach(Predicate, NRows, NColumns, MatrixElements, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     matrix_foreach(Predicate, NRows, NColumns, MatrixElements, CurrentRow1, 0).
 
@@ -311,11 +299,9 @@ matrix_foldl(matrix(_, [NRows, NColumns], MatrixElements), Predicate, Max) :-
                        TmpMax,
                        Max).
 
-matrix_start_foldl(_, 1, 1, _, Max, Max) :-
-    !.
+matrix_start_foldl(_, 1, 1, _, Max, Max) :- !.
 matrix_start_foldl(Predicate, NRows, NColumns, MatrixElements, Tmp, Max) :-
-    NColumns>1,
-    !,
+    NColumns>1, !,
     matrix_foldl(Predicate,
                  NRows,
                  NColumns,
@@ -335,11 +321,9 @@ matrix_start_foldl(Predicate, NRows, NColumns, MatrixElements, Tmp, Max) :-
                  Tmp,
                  Max).
 
-matrix_foldl(_, NRows, _, _, NRows, _, Max, Max) :-
-    !.
+matrix_foldl(_, NRows, _, _, NRows, _, Max, Max) :- !.
 
-matrix_foldl(Predicate, NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, Max) :-
-    !,
+matrix_foldl(Predicate, NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, Max) :- !,
     CurrentRow1 is CurrentRow+1,
     matrix_foldl(Predicate,
                  NRows,
@@ -366,11 +350,9 @@ matrix_foldl(Predicate, NRows, NColumns, MatrixElements, CurrentRow, CurrentColu
 
 %!  matrix_set_all(+Number,+M1)
 % matrix_set_all set all element of the matrix to Element.
-set_all(_, NRows, _, _, NRows, _) :-
-    !.
+set_all(_, NRows, _, _, NRows, _) :- !.
 
-set_all(Number, NRows, NColumns, MatrixElements, CurrentRow, NColumns) :-
-    !,
+set_all(Number, NRows, NColumns, MatrixElements, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     set_all(Number, NRows, NColumns, MatrixElements, CurrentRow1, 0).
 
@@ -425,11 +407,9 @@ matrix_dec(matrix(_, [_, NColumns], MatrixElements), [Row, Column], NewElement) 
 
 %!  matrix_max(+M1,-Max)
 % matrix_max(M,Max) unify Max with the maximum element of the matrix M.
-max_matrix(NRows, _, _, NRows, _, Max, Max) :-
-    !.
+max_matrix(NRows, _, _, NRows, _, Max, Max) :- !.
 
-max_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, Max) :-
-    !,
+max_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, Max) :- !,
     CurrentRow1 is CurrentRow+1,
     max_matrix(NRows, NColumns, MatrixElements, CurrentRow1, 0, TmpMax, Max).
 
@@ -469,11 +449,9 @@ matrix_sum(Matrix, Sum) :-
 
 %!  matrix_transpose(+M1,-M2)
 % matrix_transpose(M1,M2) transpose matrix M1 to M2.
-transpose_matrix(NRows, _, _, _, NRows, _) :-
-    !.
+transpose_matrix(NRows, _, _, _, NRows, _) :- !.
 
-transpose_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :-
-    !,
+transpose_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     transpose_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow1, 0).
 
@@ -498,11 +476,9 @@ matrix_transpose(matrix(Type, [NRows, NColumns], MatrixElements1), Matrix2) :-
 
 %!  matrix_maxarg(+M1,-MaxPosition)
 % matrix_maxarg(M,[NRowMax, NColumnMax]) unify [NRowsMax, NColumnMax] with the position of the maximum in matrix M. 
-maxarg_matrix(NRows, _, _, NRows, _, _, [NRowsMax, NColumnsMax], [NRowsMax, NColumnsMax]) :-
-    !.
+maxarg_matrix(NRows, _, _, NRows, _, _, [NRowsMax, NColumnsMax], [NRowsMax, NColumnsMax]) :- !.
 
-maxarg_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, [NRowTmp, NColumnTmp], [NRowMax, NColomnMax]) :-
-    !,
+maxarg_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, [NRowTmp, NColumnTmp], [NRowMax, NColomnMax]) :- !,
     CurrentRow1 is CurrentRow+1,
     maxarg_matrix(NRows,
                   NColumns,
@@ -556,11 +532,9 @@ matrix_maxarg(matrix(_, [NRows, NColumns], MatrixElements), [NRowMax, NColomnMax
 
 %!  matrix_minarg(+M1,-MinPosition)
 % matrix_minarg(M,[NRowMax, NColumnMax]) unify [NRowsMax, NColumnMax] with the position of the minimum in matrix M. 
-minarg_matrix(NRows, _, _, NRows, _, _, [NRowTmp, NColumnTmp], [NRowTmp, NColumnTmp]) :-
-    !.
+minarg_matrix(NRows, _, _, NRows, _, _, [NRowTmp, NColumnTmp], [NRowTmp, NColumnTmp]) :- !.
 
-minarg_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, [NRowTmp, NColumnTmp], [NRowMax, NColumnMax]) :-
-    !,
+minarg_matrix(NRows, NColumns, MatrixElements, CurrentRow, NColumns, TmpMax, [NRowTmp, NColumnTmp], [NRowMax, NColumnMax]) :- !,
     CurrentRow1 is CurrentRow+1,
     minarg_matrix(NRows,
                   NColumns,
@@ -605,11 +579,9 @@ matrix_minarg(matrix(_, [NRows, NColumns], MatrixElements), [NRowMax, NColumnMax
 
 %!  matrix_agg_lines(+M1,+AggregationMatrix)
 % matrix_agg_lines (M,AggregationMatrix) sum all the elements of every row of M and the new value will be insert in the AggregationMatrix.
-agg_lines_matrix(NRows, _, _, _, NRows, _, _) :-
-    !.
+agg_lines_matrix(NRows, _, _, _, NRows, _, _) :- !.
 
-agg_lines_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns, SumRow) :-
-    !,
+agg_lines_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns, SumRow) :- !,
     c_store(MatrixElements2[CurrentRow], SumRow),
     SumRow1 is 0,
     CurrentRow1 is CurrentRow+1,
@@ -642,11 +614,9 @@ matrix_agg_lines(matrix(Type, [NRows, NColumns], MatrixElements1), AggregationMa
 
 %!  matrix_agg_cols(+M1,+AggregationMatrix)
 % matrix_agg_cols (M,AggregationMatrix) sum all the elements of every column of M and the new value will be insert in the AggregationMatrix.
-agg_cols_matrix(_, NColumns, _, _, _, NColumns, _) :-
-    !.
+agg_cols_matrix(_, NColumns, _, _, _, NColumns, _) :- !.
 
-agg_cols_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, NRows, CurrentColumn, SumRow) :-
-    !,
+agg_cols_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, NRows, CurrentColumn, SumRow) :- !,
     c_store(MatrixElements2[CurrentColumn], SumRow),
     SumRow1 is 0,
     CurrentColumn1 is CurrentColumn+1,
@@ -692,11 +662,9 @@ matrix_map(Predicate, matrix(Type, [NRows, NColumns], MatrixElements1), matrix(T
                0,
                0).
 
-matrix_map(_, NRows, _, _, _, _, NRows, _) :-
-    !.
+matrix_map(_, NRows, _, _, _, _, NRows, _) :- !.
 
-matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, MatrixElements3, CurrentRow, NColumns) :-
-    !,
+matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, MatrixElements3, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     matrix_map(Predicate,
                NRows,
@@ -717,9 +685,9 @@ matrix_map(Predicate, NRows, NColumns, MatrixElements1, MatrixElements2, MatrixE
     matrix_map(Predicate,
                NRows,
                NColumns,
-               Element1,
-               Element2,
-               Element3,
+               MatrixElements1,
+               MatrixElements2,
+               MatrixElements3,
                CurrentRow,
                CurrentColumn1).
 
@@ -739,8 +707,7 @@ matrix_op_to_all(matrix(Type, [NRows, NColumns], MatrixElements), Operator, Oper
                Matrix2).
 
 % function that verifies that the inserted rows or columns are valid
-function_call(_, []) :-
-    !.
+function_call(_, []) :- !.
 function_call(P, [H|T]) :-
     call(P, H),
     function_call(P, T).
@@ -758,10 +725,8 @@ matrix_select_rows(matrix(Type, [NRows, NColumns], MatrixElements1), RowList, ma
                matrix(_, _, MatrixElements2)),
     matrix_select_rows(NColumns, MatrixElements1, MatrixElements2, RowList, 0, 0).
 
-matrix_select_rows(_, _, _, [], _, _) :-
-    !.
-matrix_select_rows(NColumns, MatrixElements1, MatrixElements2, [_|MoreRows], RowIndex, NColumns) :-
-    !,
+matrix_select_rows(_, _, _, [], _, _) :- !.
+matrix_select_rows(NColumns, MatrixElements1, MatrixElements2, [_|MoreRows], RowIndex, NColumns) :- !,
     RowIndex1 is RowIndex+1,
     matrix_select_rows(NColumns, MatrixElements1, MatrixElements2, MoreRows, RowIndex1, 0).
 
@@ -794,10 +759,8 @@ matrix_select_cols(matrix(Type, [NRows, NColumnsMatrix1], MatrixElements1), List
                        0,
                        0).
 
-matrix_select_cols(_, _, _, _, _, [], _, _) :-
-    !.
-matrix_select_cols(NRows, NColumnsMatrix1, NColumnsMatrix2, MatrixElements1, MatrixElements2, [_|MoreCols], NRows, ColumnIndex) :-
-    !,
+matrix_select_cols(_, _, _, _, _, [], _, _) :- !.
+matrix_select_cols(NRows, NColumnsMatrix1, NColumnsMatrix2, MatrixElements1, MatrixElements2, [_|MoreCols], NRows, ColumnIndex) :- !,
     NewNColumns is ColumnIndex+1,
     matrix_select_cols(NRows,
                        NColumnsMatrix1,
@@ -871,11 +834,9 @@ matrix_eye(NRows, NColumns, Elements) :-
 
 %!  matrix_equal(+M1,+M2)
 % matrix_equal(M1,M2) compares two matrix (M1 and M2).
-equal_matrix(NRows, _, _, _, NRows, _) :-
-    !.
+equal_matrix(NRows, _, _, _, NRows, _) :- !.
 
-equal_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :-
-    !,
+equal_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow, NColumns) :- !,
     CurrentRow1 is CurrentRow+1,
     equal_matrix(NRows, NColumns, MatrixElements1, MatrixElements2, CurrentRow1, 0).
 
@@ -895,8 +856,7 @@ matrix_equal(matrix(Type, [NRows, NColumns], MatrixElements1), matrix(Type, [NRo
 from_list(List, Elements) :-
     from_list(List, 0, Elements).
 
-from_list([], _, _) :-
-    !.
+from_list([], _, _) :- !.
 from_list([Element|MoreElements], Index, Elements) :-
     c_store(Elements[Index], Element),
     Index1 is Index+1,
@@ -911,12 +871,13 @@ example(Elements) :-
     matrix_eye(3, 3, Elements).
 
 
-matrix_random(NRows,NColumns,Matrix):-
+matrix_random(NRows, NColumns, Matrix) :-
     matrix_new(doubles, [NRows, NColumns], Matrix),
-    matrix_foreach(Matrix, \X^Y^(random(E),myset(X,Y,E))).
+    matrix_foreach(Matrix,
+                   \X^Y^(random(E), myset(X, Y, E))).
 
-aux1:-
-    matrix_random(2,2, Matrix1),
+aux1 :-
+    matrix_random(2, 2, Matrix1),
     matrix_transpose(Matrix1, Matrix2),
     matrix_mul(Matrix1, Matrix2, Matrix3),
     matrix_write(Matrix3).
@@ -1116,7 +1077,7 @@ aux1:-
     test(cholesky1) :-
     matrix_new(doubles, [3, 3], [25, 15, -5, 15, 18, 0, -5, 0, 11], Matrix1),
     matrix_new(doubles, [3, 3], Matrix2),
-    matrix_new(doubles, [3, 3], [5.0,0.0,0.0,3.0,3.0,0.0,-1.0,1.0,3.0],Expected),
+    matrix_new(doubles, [3, 3], [5.0, 0.0, 0.0, 3.0, 3.0, 0.0, -1.0, 1.0, 3.0], Expected),
     matrix_sollower(Matrix1, Matrix2),
     cholesky(Matrix2),
     matrix_equal(Matrix2, Expected).
