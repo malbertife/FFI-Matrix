@@ -1,6 +1,6 @@
 # ffimatrix
 
-SWI-Prolog pack for matrix operations. 
+SWI-Prolog pack f or matrix operations. 
 Now being rewritten to use the new FFI library for SWI-Prolog.
 Work in progress, do not use for now.
 
@@ -18,7 +18,7 @@ cp prolog/ffimatrix.mac.pl prolog/ffimatrix.pl
 source buildenv.sh
 make
 ```
-## Installatio on Mac
+## Installation on Mac
 
 ### Using the framework Accelerate
 
