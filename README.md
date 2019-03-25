@@ -12,7 +12,7 @@ Install the opneblas Homebrew formula:
 brew install openblas
 ````
 
-Copy `Makefile.mac` on `Makefile` and `prolog/ffimatrix.mac.pl` to `prolog/ffimatrix.pl``
+Copy `Makefile.mac` on `Makefile` and `prolog/ffimatrix.mac.pl` to `prolog/ffimatrix.pl`
 and compile
 ```
 cp Makefile.mac Makefile
