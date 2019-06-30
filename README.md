@@ -6,7 +6,7 @@ Work in progress, do not use for now.
 
 ## Installation on Ubuntu
 
-Install the packages `libffi-dev` and `libatlas-base-dev'
+Install the packages `libffi-dev` and `libatlas-base-dev`
 ```
 sudo apt-get install libffi-dev libatlas-base-dev
 ```
